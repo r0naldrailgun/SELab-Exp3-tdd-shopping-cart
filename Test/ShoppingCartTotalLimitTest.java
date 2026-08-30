@@ -23,6 +23,16 @@ public class ShoppingCartTotalLimitTest {
     }
 
     @Test
+    void rejectsEmptyCartWithoutChangingItsState() {
+        ShoppingCart cart = new ShoppingCart();
+
+        assertThrows(IllegalStateException.class, cart::validateCheckout);
+
+        assertEquals(0, cart.getItemCount());
+        assertEquals(0.0, cart.getTotal());
+    }
+
+    @Test
     void rejectsCartBelowMinimumWithoutChangingItsState() {
         ShoppingCart cart = new ShoppingCart();
         cart.addItem("Pen", 49.99);
@@ -42,5 +52,14 @@ public class ShoppingCartTotalLimitTest {
 
         assertEquals(1, cart.getItemCount());
         assertEquals(10_000.01, cart.getTotal());
+    }
+
+    @Test
+    void validatesTheBaseTotalBeforeApplyingDiscount() {
+        ShoppingCart cart = new ShoppingCart();
+        cart.addItem("Premium Laptop", 10_000.01);
+
+        assertEquals(9_000.01, cart.getTotalWithDiscount());
+        assertThrows(IllegalStateException.class, cart::validateCheckout);
     }
 }
