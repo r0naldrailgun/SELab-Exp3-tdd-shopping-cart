@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +20,13 @@ public class ShoppingCart {
     }
 
     public double getTotal() {
-        double total = 0.0;
+        BigDecimal total = BigDecimal.ZERO;
+
         for (double price : items.values()) {
-            total += price;
+            total = total.add(BigDecimal.valueOf(price));
         }
-        return total;
+
+        return total.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
     public double getTotalWithDiscount() {
         double total = getTotal();
