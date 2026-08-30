@@ -5,6 +5,9 @@ import java.util.Map;
 
 public class ShoppingCart {
 
+    private static final BigDecimal MINIMUM_CHECKOUT_TOTAL = new BigDecimal("50.00");
+    private static final BigDecimal MAXIMUM_CHECKOUT_TOTAL = new BigDecimal("10000.00");
+
     private Map<String, Double> items = new HashMap<>();
 
     public void addItem(String name, double price) {
@@ -31,7 +34,8 @@ public class ShoppingCart {
     public double getTotalWithDiscount() {
         BigDecimal total = BigDecimal.valueOf(getTotal());
 
-        if (total.compareTo(BigDecimal.valueOf(100.0)) > 0) {            return total
+        if (total.compareTo(BigDecimal.valueOf(100.0)) >= 0) {
+            return total
                     .multiply(new BigDecimal("0.9"))
                     .setScale(2, RoundingMode.HALF_UP)
                     .doubleValue();
@@ -44,6 +48,28 @@ public class ShoppingCart {
         return items.size();
     }
 
-    public void updateItemPrice(String name, int newPrice) {}
+    public void validateCheckout() {
+        BigDecimal total = BigDecimal.valueOf(getTotal());
 
+        if (total.compareTo(MINIMUM_CHECKOUT_TOTAL) < 0
+                || total.compareTo(MAXIMUM_CHECKOUT_TOTAL) > 0) {
+            throw new IllegalStateException("Cart total must be between 50.00 and 10000.00.");
+        }
+    }
+
+    public void updateItemPrice(String itemName, double newPrice) {
+        if (itemName == null || itemName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Item name must not be null or blank.");
+        }
+
+        if (!Double.isFinite(newPrice) || newPrice <= 0) {
+            throw new IllegalArgumentException("Item price must be finite and greater than zero.");
+        }
+
+        if (!items.containsKey(itemName)) {
+            return;
+        }
+
+        items.put(itemName, newPrice);
+    }
 }
