@@ -31,8 +31,7 @@ public class ShoppingCart {
     public double getTotalWithDiscount() {
         BigDecimal total = BigDecimal.valueOf(getTotal());
 
-        if (total.compareTo(BigDecimal.valueOf(100.0)) >= 0) {
-            return total
+        if (total.compareTo(BigDecimal.valueOf(100.0)) > 0) {            return total
                     .multiply(new BigDecimal("0.9"))
                     .setScale(2, RoundingMode.HALF_UP)
                     .doubleValue();
