@@ -29,11 +29,16 @@ public class ShoppingCart {
         return total.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
     public double getTotalWithDiscount() {
-        double total = getTotal();
-        if (total >= 100) {
-            return total * 0.9;
+        BigDecimal total = BigDecimal.valueOf(getTotal());
+
+        if (total.compareTo(BigDecimal.valueOf(100.0)) >= 0) {
+            return total
+                    .multiply(new BigDecimal("0.9"))
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue();
         }
-        return total;
+
+        return total.doubleValue();
     }
 
     public int getItemCount() {
